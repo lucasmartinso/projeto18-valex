@@ -1,8 +1,11 @@
 import { Request, Response } from "express";
-import { createCardService } from "../services/cardService"
+import { existApiCompany, validationCardSchema } from "../services/cardService"
 
 export async function createCard(req: Request, res: Response) { 
-    const apiKey: any = req.headers.authorization;
-    await createCardService(req.body);
+    const apiKey: string | undefined = req.headers.authorization;
+
+    await validationCardSchema(req.body);
+    await existApiCompany(apiKey);
+    
     return res.sendStatus(200);
-}
+} 
