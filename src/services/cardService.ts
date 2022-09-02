@@ -23,6 +23,6 @@ export async function exitEmployee(id: number) {
     console.log(employee);
 
     if(!employee) { 
-        throw { code: "Not Found", message: "These Api Key don't makes reference to a company in the database"}
+        throw { code: "Not Found", message: "These employee aren't registreted in database"}
     }
 }
