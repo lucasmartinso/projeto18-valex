@@ -35,6 +35,7 @@ export async function verifyPasswordAndCvc(id: number,cvc: number, password: num
     const cryptr = new Cryptr('myTotallySecretKey');
     const confirmCvc: number = Number(cryptr.decrypt(`${cardInfo.securityCode}`));
     const criptPassword: string = cryptr.encrypt(`${password}`);
+    console.log(confirmCvc);
    
     if(cardInfo.password) { 
         throw { code: "Bad Request", message: "This card already have password registred, so you can't active it again"};
