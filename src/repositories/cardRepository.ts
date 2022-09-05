@@ -110,6 +110,22 @@ export async function update(id: number, password: string) {
     );
 }
 
+export async function remove(id: number) {
+  connection.query<any, [number]>("DELETE FROM cards WHERE id=$1", [id]);
+}
+
+export async function updateIsBloqued(id: number, isBlocked: boolean) { 
+  await connection.query(
+      `
+        UPDATE cards
+        SET "isBlocked"= $1
+        WHERE id=$2
+      `,
+        [isBlocked,id]
+  );
+}
+
+
 //export async function update(id: number, cardData: CardUpdateData) {
 //  const { objectColumns: cardColumns, objectValues: cardValues } =
 //    mapObjectToUpdateQuery({
@@ -126,7 +142,3 @@ export async function update(id: number, password: string) {
 //    [id, ...cardValues]
 //  );
 //}
-
-export async function remove(id: number) {
-  connection.query<any, [number]>("DELETE FROM cards WHERE id=$1", [id]);
-}

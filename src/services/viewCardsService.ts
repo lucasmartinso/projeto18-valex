@@ -13,12 +13,15 @@ export async function validationPasswordSchema(schema: object) {
 
 export async function verifyActiveAndPassword(id: number, password: number) { 
     const cardInfo: any = await existCardAndExpireDate(id);
-    const cryptr = new Cryptr('myTotallySecretKey');
-    const confirmPassword: number = Number(cryptr.decrypt(`${cardInfo.password}`));
     
     if(!cardInfo.password) { 
         throw { code: "Bad Request", message: "This card aren't active"};
-    } else if(confirmPassword!==password) { 
+    } 
+    
+    const cryptr = new Cryptr('myTotallySecretKey');
+    const confirmPassword: number | undefined = Number(cryptr.decrypt(`${cardInfo.password}`));
+
+    if(confirmPassword!==password) { 
         throw { code: "Unauthorized", message: "Wrong password"};
     } 
 
