@@ -3,6 +3,7 @@ import { existApiCompany, exitEmployee, validationCardSchema, shortenEmployeeNam
 import { faker } from '@faker-js/faker';
 import { existCardAndExpireDate, validationSecuritySchema, verifyPasswordAndCvc } from "../services/activeCardService";
 import { validationPasswordSchema, verifyActiveAndPassword } from "../services/viewCardsService";
+import { block } from "../services/blockAndUnlockCardsService";
 
 export async function createCard(req: Request, res: Response) { 
     const apiKey: string | undefined = req.headers.authorization;
@@ -38,4 +39,25 @@ export async function getCard(req: Request, res: Response) {
     await existCardAndExpireDate(id);
     const consultCards: object = await verifyActiveAndPassword(id,Number(password));
     return res.status(200).send(consultCards);
-}
+} 
+
+export async function blockCard(req: Request, res: Response) { 
+    const id: number = Number(req.params.id);
+    const { password } : any = req.body;
+
+    await validationPasswordSchema(req.body);
+    await existCardAndExpireDate(id);
+    await verifyActiveAndPassword(id,Number(password));
+    await block(id);
+    return res.sendStatus(200);
+}  
+
+export async function unlockCard(req: Request, res: Response) { 
+    const id: number = Number(req.params.id);
+    const { password } : any = req.body;
+
+    await validationPasswordSchema(req.body);
+    await existCardAndExpireDate(id);
+    await verifyActiveAndPassword(id,Number(password));
+    return res.sendStatus(200);
+} 

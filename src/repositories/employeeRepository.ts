@@ -27,7 +27,7 @@ export async function cardsPerEmployeer(id: number) {
           'securityCode', "securityCode"
       )))
     FROM cards 
-    WHERE "employeeId"=$1`,
+    WHERE "employeeId"=$1 AND password IS NOT NULL`,
     [id]
   );
 
