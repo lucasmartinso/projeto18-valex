@@ -2,7 +2,7 @@ import Cryptr from 'cryptr';
 import { findById, update } from '../repositories/cardRepository';
 import "dayjs/locale/pt-br.js";
 import dayjs from "dayjs";
-import { securityCardSchema } from "../schemas/activeCardSchema";
+import { securityCardSchema } from "../schemas/cardSchema";
 
 export async function validationSecuritySchema(schema: object) {
     const validation = securityCardSchema.validate(schema);
