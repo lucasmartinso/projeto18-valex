@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { existApiCompany, exitEmployee, validationCardSchema, shortenEmployeeName, experiesDate, cvcCripted, oneCardPerTypeForEmployeer, createCards } from "../services/createCardService"
 import { faker } from '@faker-js/faker';
 import { existCardAndExpireDate, validationSecuritySchema, verifyPasswordAndCvc } from "../services/activeCardService";
-import { validationPasswordSchema, verifyActiveAndPassword } from "../services/viewCardsService";
+import { balanceTransactionRecharges, validationPasswordSchema, verifyActiveAndPassword } from "../services/viewCardsService";
 import { block, unlock } from "../services/blockAndUnlockCardsService";
 
 export async function createCard(req: Request, res: Response) { 
@@ -17,7 +17,8 @@ export async function createCard(req: Request, res: Response) {
     const shortenName: string = await shortenEmployeeName(employee.fullName);
     const experiesDateCard: string = await experiesDate();
     const cvc: number | string = await cvcCripted();
-    await createCards(employeeId,cardNumber,shortenName,cvc,experiesDateCard,true,true,type);
+    await createCards(employeeId,cardNumber,shortenName,cvc,experiesDateCard,false,true,type);
+
     return res.sendStatus(201);
 } 
 
@@ -28,6 +29,7 @@ export async function activeCard(req: Request, res: Response) {
     await validationSecuritySchema(req.body);
     await existCardAndExpireDate(id);
     await verifyPasswordAndCvc(id,Number(cvc),Number(password));
+
     return res.sendStatus(200);
 }
 
@@ -38,11 +40,17 @@ export async function getCard(req: Request, res: Response) {
     await validationPasswordSchema(req.body);
     await existCardAndExpireDate(id);
     const consultCards: object = await verifyActiveAndPassword(id,Number(password));
+
     return res.status(200).send(consultCards);
 } 
 
 export async function balanceAndDeal(req: Request, res: Response) { 
-    
+    const id: number = Number(req.params.id);
+
+    await existCardAndExpireDate(id);
+    const balance: object = await balanceTransactionRecharges(id);
+
+    return res.status(200).send(balance);
 }
 
 export async function blockCard(req: Request, res: Response) { 
@@ -53,6 +61,7 @@ export async function blockCard(req: Request, res: Response) {
     await existCardAndExpireDate(id);
     await verifyActiveAndPassword(id,Number(password));
     await block(id);
+
     return res.sendStatus(200);
 }  
 
@@ -64,5 +73,6 @@ export async function unlockCard(req: Request, res: Response) {
     await existCardAndExpireDate(id);
     await verifyActiveAndPassword(id,Number(password));
     await unlock(id);
+
     return res.sendStatus(200);
 } 

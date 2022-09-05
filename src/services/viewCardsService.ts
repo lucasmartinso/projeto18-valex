@@ -1,5 +1,7 @@
 import Cryptr from 'cryptr';
 import { cardsPerEmployeer } from '../repositories/employeeRepository';
+import { findByCardId } from '../repositories/paymentRepository';
+import { findByCardIdRe } from '../repositories/rechargeRepository';
 import { passwordSchema, passwordsSchema } from "../schemas/cardSchema";
 import { existCardAndExpireDate } from "./activeCardService";
 
@@ -42,4 +44,26 @@ export async function verifyActiveAndPassword(id: number, password: number) {
     }
     return viewCardInfo;
 } 
+
+export async function balanceTransactionRecharges(id: number) { 
+    const transactions: object[] | any = await findByCardId(id);
+    const recharges: object[] | any = await findByCardIdRe(id);
+    let outgoing = 0;
+    let over = 0;
+    
+    for(let i=0; i<transactions.length; i++) { 
+        outgoing+= transactions[i].amount;
+    } 
+    for(let i=0; i<recharges.length; i++) { 
+        over+= recharges[i].amount;
+    }
+   
+    const balance = { 
+        balance: over - outgoing, 
+        transactions, 
+        recharges
+    }
+
+    return balance;
+}
 
