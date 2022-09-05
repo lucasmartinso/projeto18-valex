@@ -14,12 +14,12 @@ export async function validationSecuritySchema(schema: object) {
 
 export async function existCardAndExpireDate(id: number) { 
     const cardInfo: any = await findById(id);
-    const cardDate: any = cardInfo.expirationDate;
     
     if(!cardInfo) { 
         throw { code: "Not Found", message: "These card id aren't registreted in database"}
     } 
 
+    const cardDate: any = cardInfo.expirationDate;
     const nowBr = dayjs().locale("pt-br");
     const hoje: string = nowBr.format("MM/YY");
 
