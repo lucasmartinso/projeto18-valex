@@ -25,6 +25,6 @@ export async function activeCard(req: Request, res: Response) {
 
     await validationSecuritySchema(req.body);
     await existCardAndExpireDate(id);
-    await verifyPasswordAndCvc(id,cvc,password);
+    await verifyPasswordAndCvc(id,Number(cvc),Number(password));
     return res.sendStatus(200);
 }

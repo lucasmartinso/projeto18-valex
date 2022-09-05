@@ -1,5 +1,5 @@
 import Cryptr from 'cryptr';
-import { findById } from '../repositories/cardRepository';
+import { findById, update } from '../repositories/cardRepository';
 import "dayjs/locale/pt-br.js";
 import dayjs from "dayjs";
 import { securityCardSchema } from "../schemas/activeCardSchema";
@@ -32,8 +32,15 @@ export async function existCardAndExpireDate(id: number) {
 
 export async function verifyPasswordAndCvc(id: number,cvc: number, password: number) {
     const cardInfo: any = await existCardAndExpireDate(id);
+    const cryptr = new Cryptr('myTotallySecretKey');
+    const confirmCvc: number = Number(cryptr.decrypt(`${cardInfo.securityCode}`));
+    const criptPassword: string = cryptr.encrypt(`${password}`);
    
     if(cardInfo.password) { 
         throw { code: "Bad Request", message: "This card already have password registred, so you can't active it again"};
-    }
+    } if(confirmCvc!==cvc) { 
+        throw { code: "Unauthorized", message: "Wrong CVC"};
+    } 
+
+    await update(id,criptPassword);
 }

@@ -102,8 +102,8 @@ export async function update(id: number, password: string) {
   await connection.query(
         `
         UPDATE cards
-        SET password= $1
-        SET "isBlocked" = $2
+        SET password= $1,
+            "isBlocked"= $2
         WHERE id=$3
       `,
         [password,false,id]
