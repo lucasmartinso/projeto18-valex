@@ -1,10 +1,18 @@
 import Cryptr from 'cryptr';
 import { cardsPerEmployeer } from '../repositories/employeeRepository';
-import { passwordSchema } from "../schemas/cardSchema";
+import { passwordSchema, passwordsSchema } from "../schemas/cardSchema";
 import { existCardAndExpireDate } from "./activeCardService";
 
 export async function validationPasswordSchema(schema: object) {
     const validation = passwordSchema.validate(schema);
+
+    if(validation.error) { 
+        throw { code: "Unprocessable Entity", message: validation.error.details[0].message}
+    }
+}  
+
+export async function validationPasswordsSchema(schema: object) {
+    const validation = passwordsSchema.validate(schema);
 
     if(validation.error) { 
         throw { code: "Unprocessable Entity", message: validation.error.details[0].message}

@@ -12,4 +12,12 @@ export const securityCardSchema = joi.object({
 
 export const passwordSchema = joi.object({ 
     password: joi.string().pattern(/^[0-9]{4}$/).required()
+}) 
+
+export const passwordsSchema = joi.object({ 
+    passwordGroceries: joi.string().pattern(/^[0-9]{4}$/), 
+    passwordRestaurant: joi.string().pattern(/^[0-9]{4}$/), 
+    passwordTransport: joi.string().pattern(/^[0-9]{4}$/),  
+    passwordEducation: joi.string().pattern(/^[0-9]{4}$/), 
+    passwordHealth: joi.string().pattern(/^[0-9]{4}$/)
 })

@@ -41,6 +41,10 @@ export async function getCard(req: Request, res: Response) {
     return res.status(200).send(consultCards);
 } 
 
+export async function balanceAndDeal(req: Request, res: Response) { 
+    
+}
+
 export async function blockCard(req: Request, res: Response) { 
     const id: number = Number(req.params.id);
     const { password } : any = req.body;
