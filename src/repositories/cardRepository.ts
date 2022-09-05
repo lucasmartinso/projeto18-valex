@@ -1,5 +1,5 @@
-import { connection } from "../database.js";
-import { mapObjectToUpdateQuery } from "../utils/sqlUtils.js";
+import { connection } from "../databases/database";
+//import { mapObjectToUpdateQuery } from "../utils/sqlUtils";
 
 export type TransactionTypes =
   | "groceries"
@@ -74,9 +74,7 @@ export async function insert(cardData: CardInsertData) {
     cardholderName,
     securityCode,
     expirationDate,
-    password,
     isVirtual,
-    originalCardId,
     isBlocked,
     type,
   } = cardData;
@@ -84,8 +82,8 @@ export async function insert(cardData: CardInsertData) {
   connection.query(
     `
     INSERT INTO cards ("employeeId", number, "cardholderName", "securityCode",
-      "expirationDate", password, "isVirtual", "originalCardId", "isBlocked", type)
-    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+      "expirationDate", "isVirtual", "isBlocked", type)
+    VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
   `,
     [
       employeeId,
@@ -93,32 +91,54 @@ export async function insert(cardData: CardInsertData) {
       cardholderName,
       securityCode,
       expirationDate,
-      password,
       isVirtual,
-      originalCardId,
       isBlocked,
       type,
     ]
   );
-}
+} 
 
-export async function update(id: number, cardData: CardUpdateData) {
-  const { objectColumns: cardColumns, objectValues: cardValues } =
-    mapObjectToUpdateQuery({
-      object: cardData,
-      offset: 2,
-    });
-
-  connection.query(
-    `
-    UPDATE cards
-      SET ${cardColumns}
-    WHERE $1=id
-  `,
-    [id, ...cardValues]
-  );
+export async function update(id: number, password: string) {
+  await connection.query(
+        `
+        UPDATE cards
+        SET password= $1,
+            "isBlocked"= $2
+        WHERE id=$3
+      `,
+        [password,false,id]
+    );
 }
 
 export async function remove(id: number) {
   connection.query<any, [number]>("DELETE FROM cards WHERE id=$1", [id]);
 }
+
+export async function updateIsBloqued(id: number, isBlocked: boolean) { 
+  await connection.query(
+      `
+        UPDATE cards
+        SET "isBlocked"= $1
+        WHERE id=$2
+      `,
+        [isBlocked,id]
+  );
+}
+
+
+//export async function update(id: number, cardData: CardUpdateData) {
+//  const { objectColumns: cardColumns, objectValues: cardValues } =
+//    mapObjectToUpdateQuery({
+//      object: cardData,
+//      offset: 2,
+//    });
+//
+//  connection.query(
+//    `
+//    UPDATE cards
+//      SET ${cardColumns}
+//    WHERE $1=id
+//  `,
+//    [id, ...cardValues]
+//  );
+//}
