@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { existCardAndExpireDate } from "../services/activeCardService";
 import { existApiCompany } from "../services/createCardService";
 import { rechargeCard, validationRechargeSchema, verifyCardInfo } from "../services/rechargeService";
 

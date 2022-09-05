@@ -14,7 +14,7 @@ export async function findByCardId(cardId: number) {
     [cardId]
   );
 
-  return result.rows;
+  return result.rows[0];
 }
 
 export async function insert(rechargeData: RechargeInsertData) {
@@ -24,4 +24,16 @@ export async function insert(rechargeData: RechargeInsertData) {
     `INSERT INTO recharges ("cardId", amount) VALUES ($1, $2)`,
     [cardId, amount]
   );
+} 
+
+export async function allMoneyPerCard(cardId: number) { 
+  const result = await connection.query(
+    `SELECT "cardId", SUM(amount) AS balance
+    FROM recharges
+    WHERE "cardId"= $1
+    GROUP BY "cardId"`,
+    [cardId]
+  ); 
+
+  return result.rows[0];
 }
