@@ -96,6 +96,18 @@ export async function insert(cardData: CardInsertData) {
       type,
     ]
   );
+} 
+
+export async function update(id: number, password: string) {
+  await connection.query(
+        `
+        UPDATE cards
+        SET password= $1
+        SET "isBlocked" = $2
+        WHERE id=$3
+      `,
+        [password,false,id]
+    );
 }
 
 //export async function update(id: number, cardData: CardUpdateData) {

@@ -20,7 +20,7 @@ export async function existApiCompany(apiKey: any) {
     const company: object = await findByApiKey(apiKey);
 
     if(!company) { 
-        throw { code: "Not Found", message: "These Api Key don't makes reference to a company in the database"}
+        throw { code: "Unauthorized", message: "These Api Key doesn't makes reference to a company in the database"}
     }
 } 
 
@@ -38,7 +38,7 @@ export async function oneCardPerTypeForEmployeer(type: TransactionTypes, employe
     const verify: object = await findByTypeAndEmployeeId(type,employeeId);
      
     if(verify) { 
-        throw { code: "Bad Request", message: "This employeer already have a card with that type, he can have only on per type"};
+        throw { code: "Bad Request", message: "This employeer already have a card with that type, he can have only one per type"};
     }
 }
 
@@ -58,9 +58,9 @@ export async function shortenEmployeeName(name:string) {
 
 export async function experiesDate() {
     const nowBr = dayjs().locale("pt-br");
-    const hoje: string = nowBr.format("MM/YYYY");
+    const hoje: string = nowBr.format("MM/YY");
     
-    let experiesIn: number | string = Number(hoje.substring(3,7)) + 5;
+    let experiesIn: number | string = Number(hoje.substring(3,5)) + 5;
     experiesIn = `${hoje.substring(0,2)}/${experiesIn}`
     return experiesIn;
 }

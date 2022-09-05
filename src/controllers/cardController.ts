@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { existApiCompany, exitEmployee, validationCardSchema, shortenEmployeeName, experiesDate, cvcCripted, oneCardPerTypeForEmployeer, createCards } from "../services/cardService"
+import { existApiCompany, exitEmployee, validationCardSchema, shortenEmployeeName, experiesDate, cvcCripted, oneCardPerTypeForEmployeer, createCards } from "../services/createCardService"
 import { faker } from '@faker-js/faker';
-
+import { existCardAndExpireDate, validationSecuritySchema, verifyPasswordAndCvc } from "../services/activeCardService";
 
 export async function createCard(req: Request, res: Response) { 
     const apiKey: string | undefined = req.headers.authorization;
@@ -18,3 +18,13 @@ export async function createCard(req: Request, res: Response) {
     await createCards(employeeId,cardNumber,shortenName,cvc,experiesDateCard,true,true,type);
     return res.sendStatus(200);
 } 
+
+export async function activeCard(req: Request, res: Response) { 
+    const id: number = Number(req.params.id);
+    const { cvc, password } : any = req.body;
+
+    await validationSecuritySchema(req.body);
+    await existCardAndExpireDate(id);
+    await verifyPasswordAndCvc(id,cvc,password);
+    return res.sendStatus(200);
+}
