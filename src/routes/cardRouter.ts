@@ -1,5 +1,4 @@
 import { Router } from "express"; 
-import "../controllers/cardController";
 import { activeCard, blockCard, createCard, getCard, unlockCard } from "../controllers/cardController";
 
 const router = Router();
