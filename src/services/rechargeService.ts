@@ -13,10 +13,12 @@ export async function validationRechargeSchema(schema: object) {
 
 export async function verifyCardInfo(id: number) { 
     const cardInfo: any = await existCardAndExpireDate(id);
-    
+
     if(!cardInfo.password) { 
         throw { code: "Bad Request", message: "This card aren't active"};
     } 
+
+    return cardInfo;
 } 
 
 export async function rechargeCard(id: number, amount: number) { 
